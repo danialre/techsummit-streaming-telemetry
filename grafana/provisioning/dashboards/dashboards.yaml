@@ -1,0 +1,18 @@
+##
+# datasource.yaml
+#
+# Pre-provision dashboards.
+##
+apiVersion: 1
+providers:
+  - name: pre-provision
+    orgId: 1
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 60
+    allowUiUpdates: true
+    options:
+      # <string, required> path to dashboard files on disk. Required when using the 'file' type
+      path: /presets/dashboards
+      # <bool> use folder names from filesystem to create folders in Grafana
+      foldersFromFilesStructure: true

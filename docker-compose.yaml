@@ -1,0 +1,74 @@
+###
+# docker-compose.yaml
+# Sets up the Telemetry stack (ingest, storage, visualization).
+#
+###
+####          ####
+##  EDIT BELOW  ##
+####          ####
+x-tsdb-env: &tsdb-env
+  INFLUXDB_ADMIN_USER: admin
+  # change your admin password (optional)
+  INFLUXDB_ADMIN_PASSWORD: secret123
+####               ####
+##  NO MORE EDITING  ##
+####               ####
+networks:
+  telemetry_net:
+services:
+  # Database - InfluxDB
+  influxdb:
+    image: influxdb:1.8
+    networks:
+    - telemetry_net
+    environment:
+      <<: *tsdb-env
+    volumes:
+    - ./volatile/influxdb:/var/lib/influxdb
+    - ./influxdb/config.yaml:/etc/influxdb2/config.yml
+    - ./influxdb/scripts/:/docker-entrypoint-initdb.d/:ro
+
+  # Telegraf - streaming telemetry for advanced devices
+  telegraf:
+    image: telegraf:1.31
+    environment:
+      <<: *tsdb-env
+    networks:
+    - telemetry_net
+    ports:
+    - "10.10.${NETWORK_ID}.10:57500:57000"
+    volumes:
+    - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+    - influxdb
+
+  # SNMP telemetry for regular devices
+  # telegraf_snmp:
+  #   build: telegraf
+  #   networks:
+  #   - telemetry_net
+  #   environment:
+  #     <<: *tsdb-env
+  #     SNMP_COMMUNITY: my_community_string
+  #   volumes:
+  #   - ./telegraf/telegraf-snmp.conf:/etc/telegraf/telegraf.conf:ro
+  #   depends_on:
+  #   - influxdb
+
+  # Detailed visualization - Grafana
+  grafana:
+    image: grafana/grafana-oss:11.0.0
+    environment:
+      <<: *tsdb-env
+    networks:
+    - telemetry_net
+    ports:
+    - "10.10.${NETWORK_ID}.10:3000:3000"
+    volumes:
+    - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+    - ./grafana/provisioning/:/etc/grafana/provisioning/:ro
+    - ./grafana/dashboards:/presets/dashboards:ro
+    - ./volatile/grafana:/var/lib/grafana
+    user: "${UID}:${UID}"
+    depends_on:
+    - influxdb

@@ -1,0 +1,16 @@
+##
+# telegraf.conf
+#
+# A simple InfluxDB 2.x configuration to get you started. 
+#
+# Note that at the time of this writing (June 2024), Flux has been deprecated.
+# So if you're pointing endpoints at this database, make sure you're using the 
+# v1 API endpoints/InfluxQL to query your data.
+#
+# by Danial Ebling (danial@uen.org)
+##
+bolt-path: /var/lib/influxdb2/influxd.bolt
+engine-path: /var/lib/influxdb2/engine
+reporting-disabled: true
+ui-disabled: true
+log-level: info

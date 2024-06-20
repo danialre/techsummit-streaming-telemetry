@@ -1,0 +1,29 @@
+##
+# datasource.yaml
+#
+# Pre-provision the InfluxDB datasource.
+##
+apiVersion: 1
+datasources:
+  - name: IDB-Metrics
+    type: influxdb
+    access: proxy
+    url: "http://influxdb:8086"
+    user: $INFLUXDB_ADMIN_USER
+    isDefault: true
+    jsonData:
+      dbName: metrics
+      httpMode: GET
+    secureJsonData:
+      password: $INFLUXDB_ADMIN_PASSWORD
+  - name: IDB-Stackhealth
+    type: influxdb
+    access: proxy
+    url: "http://influxdb:8086"
+    user: $INFLUXDB_ADMIN_USER
+    isDefault: false
+    jsonData:
+      dbName: stackhealth
+      httpMode: GET
+    secureJsonData:
+      password: $INFLUXDB_ADMIN_PASSWORD
