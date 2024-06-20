@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import mdt_grpc_dialout_pb2 as mdt__grpc__dialout__pb2
+import mdt_grpc_dialout_pb2_grpc as mdt__grpc__dialout__pb2
 
 GRPC_GENERATED_VERSION = '1.64.0'
 GRPC_VERSION = grpc.__version__
