@@ -23,8 +23,8 @@ from collections.abc import Iterator
 
 sys.path.insert(0, os.path.join(sys.path[0], 'cisco_proto'))
 import mdt_grpc_dialout_pb2_grpc
-import mdt_grpc_dialout_pb2
-import telemetry_pb2
+#import mdt_grpc_dialout_pb2
+import telemetry_pb2_grpc
 
 TAGS = ["host", "source", "subscription", "path", "name"]
 DESTINATIONS = [
@@ -166,7 +166,7 @@ class MetricsGenerator(object):
 
             yield msg
             self.send_index += 1
-        
+
         logging.info(f"Disconnected from {self.destination}")
 
     def send_grpc(self):
@@ -223,7 +223,7 @@ class GeneratorCollection(object):
 
     def __init__(self, destination):
         self.generators = []
-        
+
         self.destination = destination
         signal.signal(signal.SIGINT, self.stop)
         signal.signal(signal.SIGTERM, self.stop)
@@ -259,7 +259,7 @@ def main(destinations):
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout,
-                        format='%(asctime)s %(message)s', 
+                        format='%(asctime)s %(message)s',
                         datefmt='%Y/%m/%d %H:%M:%S', level=logging.DEBUG)
     parser = argparse.ArgumentParser(prog='generator.py', description='Metrics Generator')
     parser.add_argument('-r', '--range', help='use IP ranges instead of localhost', action='store_true')
